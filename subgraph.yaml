@@ -21,3 +21,26 @@ dataSources:
         - event: EscrowCreated(indexed address,indexed address,uint256,address,uint256,uint256,address[])
           handler: handleEscrowCreated
       file: ./src/mapping.ts
+
+    - kind: ethereum
+    name: CypherEscrow
+    network: goerli
+    source:
+      abi: CypherEscrow
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - EscrowCreated
+      abis:
+        - name: CypherEscrow
+          file: ./abis/CypherEscrow.json
+      eventHandlers:
+        - event: AmountSent(address,address,uint256,uint256)
+          handler: handleAmountSent
+        - event: AmountStopped(address,address,uint256,uint256)
+          handler: handleAmountStopped
+        - event: OracleAdded(address,address)
+          handler: handleOracleAdded
+      file: ./src/mapping.ts
