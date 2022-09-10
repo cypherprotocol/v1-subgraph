@@ -1,6 +1,40 @@
-type ExampleEntity @entity {
+type escrow @entity {
   id: ID!
-  count: BigInt!
-  escrow: Bytes! # address
-  protocol: Bytes! # address
+  escrowTransactions: [escrowTransaction!]!
+}
+
+type protocol @entity {
+  id: ID!
+  protocolEscrow: protocolEscrow
+}
+
+type protocolEscrow @entity {
+  id: ID!
+  oracles: [account!]!
+}
+
+type account @entity {
+  id: ID!
+  oracleEscrow: [oracleEscrow!]! @derivedFrom(field: "account")
+}
+
+type oracleEscrow @entity {
+  id: ID!
+  account: account
+  escrow: escrow
+}
+
+type escrowTransaction @entity {
+  id: ID!
+  timestamp: Int!
+  blockNumber: Int!
+  receiverAddress: account
+  protocol: protocol
+  status: Status!
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  CANCELLED
 }
