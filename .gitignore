@@ -1,0 +1,18 @@
+# Node dependencies.
+node_modules/
+
+# Ignore all generated files.
+generated/
+build/
+
+# Ignore all dot files.
+.*
+
+# Ignore all log files.
+*.log
+
+# Allowed dot files
+!.gitignore
+!.prettierrc
+!.prettierignore
+!.npmrc
