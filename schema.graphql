@@ -1,36 +1,33 @@
-type escrow @entity {
+type Account @entity {
   id: ID!
-  escrowTransactions: [escrowTransaction!]!
+  address: Bytes!
+  escrows: [Escrow!]! @derivedFrom(field: "oracles")
 }
 
-type protocol @entity {
+type Protocol @entity {
   id: ID!
-  protocolEscrow: protocolEscrow
+  name: String
+  escrow: Escrow
 }
 
-type protocolEscrow @entity {
+type Escrow @entity {
   id: ID!
-  oracles: [account!]!
+  chainId: BigInt!
+  token: String!
+  tokenThreshold: BigInt!
+  timeLimit: BigInt!
+  oracles: [User!]!
+  protocol: Protocol! @derivedFrom(field: "domain")
+  transactions: [EscrowTransaction!]! @derivedFrom(field: "escrow")
 }
 
-type account @entity {
+type EscrowTransaction @entity {
   id: ID!
-  oracleEscrow: [oracleEscrow!]! @derivedFrom(field: "account")
-}
-
-type oracleEscrow @entity {
-  id: ID!
-  account: account
-  escrow: escrow
-}
-
-type escrowTransaction @entity {
-  id: ID!
-  timestamp: Int!
-  blockNumber: Int!
-  receiverAddress: account
-  protocol: protocol
-  status: Status!
+  escrow: Escrow!
+  from: Account!
+  to: Account!
+  token: Bytes!
+  amount: BigInt!
 }
 
 enum Status {
