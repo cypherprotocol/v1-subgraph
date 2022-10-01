@@ -16,8 +16,8 @@ type Escrow @entity {
   token: String!
   tokenThreshold: BigInt!
   timeLimit: BigInt!
-  oracles: [User!]!
-  protocol: Protocol! @derivedFrom(field: "domain")
+  oracles: [Account!]!
+  protocol: Protocol! @derivedFrom(field: "escrow")
   transactions: [EscrowTransaction!]! @derivedFrom(field: "escrow")
 }
 

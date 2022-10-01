@@ -19,22 +19,22 @@ dataSources:
         - name: CypherEscrow
           file: ./abis/CypherEscrow.json
       eventHandlers:
-        - event: AmountSent(address,address,address,uint256)
-         handler: handleAmountSent
-        - event: AmountStopped(address,address,address,uint256)
-         handler: handleAmountStopped
-        - event: TransactionDenied(address,address,uint256)
-         handler: handleTransactionDenied
-        - event: OracleAdded(address, address)
-         handler: handleOracleAdded
+        - event: AmountSent(indexed address,indexed address,address,uint256)
+          handler: handleAmountSent
+        - event: AmountStopped(indexed address,indexed address,address,uint256)
+          handler: handleAmountStopped
+        - event: TransactionDenied(indexed address,address,uint256)
+          handler: handleTransactionDenied
+        - event: OracleAdded(indexed address,address)
+          handler: handleOracleAdded
         - event: TimeLimitSet(uint256)
-         handler: handleTimeLimitSet
-        - event: AddressAddedToWhitelist(address,address)
-         handler: handleAddressAddedToWhitelist
-        - event: WithdrawApproved(address,address)
-         handler: handleWithdrawApproved
-        - event: WithdrawDisapproved(address,address)
-         handler: handleWithdrawDisapproved
+          handler: handleTimeLimitSet
+        - event: AddressAddedToWhitelist(indexed address,address)
+          handler: handleAddressAddedToWhitelist
+        - event: WithdrawApproved(indexed address,indexed address)
+          handler: handleWithdrawApproved
+        - event: WithdrawDisapproved(indexed address,indexed address)
+          handler: handleWithdrawDisapproved
       file: ./src/escrow.ts
   - kind: ethereum
     name: CypherRegistry
@@ -52,6 +52,6 @@ dataSources:
         - name: CypherRegistry
           file: ./abis/CypherRegistry.json
       eventHandlers:
-        - event: EscrowCreated(address,address,uint256,address,uint256,uint256,address[])
-         handler: handleEscrowCreated
+        - event: EscrowCreated(indexed address,indexed address,uint256,address,uint256,uint256,address[])
+          handler: handleEscrowCreated
       file: ./src/registry.ts
