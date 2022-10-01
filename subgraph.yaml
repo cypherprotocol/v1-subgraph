@@ -3,44 +3,55 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: CypherRegistry
-    network: goerli
-    source:
-      address: "0x8e033242AEBd28c0E177c961C316BFB49DA618Af"
-      abi: CypherRegistry
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - EscrowCreated
-      abis:
-        - name: CypherRegistry
-          file: ./abis/CypherRegistry.json
-      eventHandlers:
-        - event: EscrowCreated(indexed address,indexed address,uint256,address,uint256,uint256,address[])
-          handler: handleEscrowCreated
-      file: ./src/mapping.ts
-
-    - kind: ethereum
     name: CypherEscrow
     network: goerli
     source:
+      address: "0x0dd5da62cff131787fab7b4755f422b329df39c1"
       abi: CypherEscrow
+      startBlock: 7688590
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - EscrowCreated
+        - Escrow
       abis:
         - name: CypherEscrow
           file: ./abis/CypherEscrow.json
       eventHandlers:
-        - event: AmountSent(address,address,uint256,uint256)
-          handler: handleAmountSent
-        - event: AmountStopped(address,address,uint256,uint256)
-          handler: handleAmountStopped
-        - event: OracleAdded(address,address)
-          handler: handleOracleAdded
-      file: ./src/mapping.ts
+        - event: AmountSent(address,address,address,uint256)
+         handler: handleAmountSent
+        - event: AmountStopped(address,address,address,uint256)
+         handler: handleAmountStopped
+        - event: TransactionDenied(address,address,uint256)
+         handler: handleTransactionDenied
+        - event: OracleAdded(address, address)
+         handler: handleOracleAdded
+        - event: TimeLimitSet(uint256)
+         handler: handleTimeLimitSet
+        - event: AddressAddedToWhitelist(address,address)
+         handler: handleAddressAddedToWhitelist
+        - event: WithdrawApproved(address,address)
+         handler: handleWithdrawApproved
+        - event: WithdrawDisapproved(address,address)
+         handler: handleWithdrawDisapproved
+      file: ./src/escrow.ts
+  - kind: ethereum
+    name: CypherRegistry
+    network: goerli
+    source:
+      abi: CypherRegistry
+      startBlock: 7688590
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Escrow
+      abis:
+        - name: CypherRegistry
+          file: ./abis/CypherRegistry.json
+      eventHandlers:
+        - event: AmountSent(address,address,address,uint256)
+         handler: handleAmountSent
+      file: ./src/registry.ts
