@@ -5,4 +5,29 @@ import {
 
 import { Account, Escrow, Protocol } from "../generated/schema";
 
-export function handleEscrowCreated(event: EscrowCreatedEvent): void {}
+export function handleEscrowCreated(event: EscrowCreatedEvent): void {
+  let protocol = Protocol.load(event.params.protocol.toHexString());
+
+  if (protocol == null) {
+    protocol = new Protocol(event.params.protocol.toHexString());
+
+    let escrow = Escrow.load(event.params.escrow.toHexString());
+    if (escrow == null) {
+      escrow = new Escrow(event.params.escrow.toHexString());
+      escrow.chainId = event.params.chainId;
+      escrow.token = event.params.token.toHexString();
+      escrow.tokenThreshold = event.params.tokenThreshold;
+      escrow.timeLimit = event.params.timeLimit;
+      escrow.oracles = event.params.oracles.map((oracle) =>
+        oracle.toHexString()
+      );
+
+      escrow.save();
+    }
+
+    protocol.escrow = escrow.id;
+    protocol.name = "Unknown";
+
+    protocol.save();
+  }
+}
