@@ -10,7 +10,12 @@ import {
   CypherEscrow as EscrowContract,
 } from "../generated/CypherEscrow/CypherEscrow";
 
-import { Account, Escrow, Protocol } from "../generated/schema";
+import {
+  Account,
+  Escrow,
+  Protocol,
+  EscrowTransaction,
+} from "../generated/schema";
 
 export function handleAmountSent(event: AmountSentEvent): void {}
 
