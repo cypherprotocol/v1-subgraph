@@ -22,6 +22,14 @@ export function handleEscrowCreated(event: EscrowCreatedEvent): void {
         oracle.toHexString()
       );
 
+      event.params.oracles.forEach((oracle) => {
+        let account = Account.load(oracle.toHexString());
+        if (account == null) {
+          account = new Account(oracle.toHexString());
+          account.save();
+        }
+      });
+
       escrow.save();
     }
 
