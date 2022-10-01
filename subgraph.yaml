@@ -52,6 +52,6 @@ dataSources:
         - name: CypherRegistry
           file: ./abis/CypherRegistry.json
       eventHandlers:
-        - event: AmountSent(address,address,address,uint256)
-         handler: handleAmountSent
+        - event: EscrowCreated(address,address,uint256,address,uint256,uint256,address[])
+         handler: handleEscrowCreated
       file: ./src/registry.ts
