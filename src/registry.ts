@@ -21,8 +21,6 @@ export function handleEscrowCreated(event: EscrowCreatedEvent): void {
       escrow.oracles = event.params.oracles.map((oracle) =>
         oracle.toHexString()
       );
-      // escrow.status = "ACTIVE";
-      // escrow.counter
 
       event.params.oracles.forEach((oracle) => {
         let account = Account.load(oracle.toHexString());
