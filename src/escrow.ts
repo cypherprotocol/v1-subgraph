@@ -5,8 +5,6 @@ import {
   OracleAdded as OracleAddedEvent,
   TimeLimitSet as TimeLimitSetEvent,
   AddressAddedToWhitelist as AddressAddedToWhitelistEvent,
-  WithdrawApproved as WithdrawApprovedEvent,
-  WithdrawDisapproved as WithdrawDisapprovedEvent,
   CypherEscrow as EscrowContract,
 } from "../generated/CypherEscrow/CypherEscrow";
 
@@ -17,9 +15,31 @@ import {
   EscrowTransaction,
 } from "../generated/schema";
 
+const { keccak256 } = require("@ethersproject/keccak256");
+
 export function handleAmountSent(event: AmountSentEvent): void {}
 
-export function handleAmountStopped(event: AmountStoppedEvent): void {}
+/// @dev The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
+export function handleAmountStopped(event: AmountStoppedEvent): void {
+  // create new escrowTx to display in UI
+  let escrowTx = EscrowTransaction.load(event.address.toHex());
+  if (escrowTx == null) return;
+
+  // calculate the id which is a hash of the event params
+  escrowTx.id = keccak256(
+    event.params.from,
+    event.params.to,
+    event.params.tokenContract,
+    event.params.amount,
+    event.params.counter
+  );
+  escrowTx.from = event.params.from.toHexString();
+  escrowTx.to = event.params.to.toHexString();
+  escrowTx.token = event.params.tokenContract.toHexString();
+  escrowTx.amount = event.params.amount;
+  escrowTx.counter = event.params.counter;
+  escrowTx.status = "STOPPED";
+}
 
 export function handleTransactionDenied(event: TransactionDeniedEvent): void {}
 
@@ -53,16 +73,3 @@ export function handleAddressAddedToWhitelist(
 
   escrow.save();
 }
-
-export function handleWithdrawApproved(event: WithdrawApprovedEvent): void {
-  let escrow = Escrow.load(event.address.toHexString());
-  if (escrow == null) return;
-
-  // TODO
-
-  escrow.save();
-}
-
-export function handleWithdrawDisapproved(
-  event: WithdrawDisapprovedEvent
-): void {}
