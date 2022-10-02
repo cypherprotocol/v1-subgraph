@@ -14,13 +14,15 @@ export function handleEscrowCreated(event: EscrowCreatedEvent): void {
     let escrow = Escrow.load(event.params.escrow.toHexString());
     if (escrow == null) {
       escrow = new Escrow(event.params.escrow.toHexString());
-      escrow.chainId = event.params.chainId;
+      // escrow.chainId = event.params.chainId;
       escrow.token = event.params.token.toHexString();
       escrow.tokenThreshold = event.params.tokenThreshold;
       escrow.timeLimit = event.params.timeLimit;
       escrow.oracles = event.params.oracles.map((oracle) =>
         oracle.toHexString()
       );
+      // escrow.status = "ACTIVE";
+      // escrow.counter
 
       event.params.oracles.forEach((oracle) => {
         let account = Account.load(oracle.toHexString());
