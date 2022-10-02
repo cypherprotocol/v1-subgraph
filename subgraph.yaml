@@ -23,7 +23,9 @@ dataSources:
           handler: handleAmountSent
         - event: AmountStopped(indexed address,indexed address,address,uint256)
           handler: handleAmountStopped
-        - event: TransactionDenied(indexed address,address,uint256)
+        - event: TransactionAccepted(indexed address,indexed address,address,uint256)
+          handler: handleTransactionAccepted
+        - event: TransactionDenied(indexed address,indexed address,address,uint256)
           handler: handleTransactionDenied
         - event: OracleAdded(indexed address,address)
           handler: handleOracleAdded
@@ -31,10 +33,6 @@ dataSources:
           handler: handleTimeLimitSet
         - event: AddressAddedToWhitelist(indexed address,address)
           handler: handleAddressAddedToWhitelist
-        - event: WithdrawApproved(indexed address,indexed address)
-          handler: handleWithdrawApproved
-        - event: WithdrawDisapproved(indexed address,indexed address)
-          handler: handleWithdrawDisapproved
       file: ./src/escrow.ts
   - kind: ethereum
     name: CypherRegistry
