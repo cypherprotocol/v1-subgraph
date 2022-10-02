@@ -12,7 +12,6 @@ type Protocol @entity {
 
 type Escrow @entity {
   id: ID!
-  chainId: BigInt!
   token: String!
   tokenThreshold: BigInt!
   timeLimit: BigInt!
@@ -28,6 +27,8 @@ type EscrowTransaction @entity {
   to: Account!
   token: Bytes!
   amount: BigInt!
+  status: Status!
+  counter: BigInt!
 }
 
 enum Status {
