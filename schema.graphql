@@ -1,7 +1,7 @@
 type Account @entity {
   id: ID!
-  address: Bytes!
-  escrows: [Escrow!]! @derivedFrom(field: "oracles")
+  escrows: [Escrow!]! @derivedFrom(field: "oracles") ## which escrows this account is an oracle for
+  whitelist: [Escrow!]! @derivedFrom(field: "whitelist") ## which escrows this account is whitelisted for
 }
 
 type Protocol @entity {
@@ -15,6 +15,7 @@ type Escrow @entity {
   token: String!
   tokenThreshold: BigInt!
   timeLimit: BigInt!
+  whitelist: [Account!]!
   oracles: [Account!]!
   protocol: Protocol! @derivedFrom(field: "escrow")
   transactions: [EscrowTransaction!]! @derivedFrom(field: "escrow")
