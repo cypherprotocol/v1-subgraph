@@ -19,13 +19,13 @@ const { keccak256 } = require("@ethersproject/keccak256");
 
 export function handleAmountSent(event: AmountSentEvent): void {}
 
-/// @dev The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
+/// The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
 export function handleAmountStopped(event: AmountStoppedEvent): void {
-  // create new escrowTx to display in UI
+  // Create new escrowTx to display in UI
   let escrowTx = EscrowTransaction.load(event.address.toHex());
   if (escrowTx == null) return;
 
-  // calculate the id which is a hash of the event params
+  // Calculate the id which is a hash of the event params
   escrowTx.id = keccak256(
     event.params.from,
     event.params.to,
@@ -39,6 +39,8 @@ export function handleAmountStopped(event: AmountStoppedEvent): void {
   escrowTx.amount = event.params.amount;
   escrowTx.counter = event.params.counter;
   escrowTx.status = "STOPPED";
+
+  escrowTx.save();
 }
 
 export function handleTransactionDenied(event: TransactionDeniedEvent): void {}
