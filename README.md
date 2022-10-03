@@ -1,3 +1,13 @@
 ## Cypher Subgraph
 
-run `graph codegen` to generate the schema locally
+1. `yarn install`
+2. `graph codegen`
+
+## Commits
+
+♻️ refactor
+📝docs
+✨feat
+👷‍♂️edit
+🎨cleanup
+⚡️gas optimize

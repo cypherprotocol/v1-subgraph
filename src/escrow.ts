@@ -1,12 +1,9 @@
 import {
-  AmountSent as AmountSentEvent,
   AmountStopped as AmountStoppedEvent,
   TransactionDenied as TransactionDeniedEvent,
   OracleAdded as OracleAddedEvent,
   TimeLimitSet as TimeLimitSetEvent,
   AddressAddedToWhitelist as AddressAddedToWhitelistEvent,
-  WithdrawApproved as WithdrawApprovedEvent,
-  WithdrawDisapproved as WithdrawDisapprovedEvent,
   CypherEscrow as EscrowContract,
 } from "../generated/CypherEscrow/CypherEscrow";
 
@@ -17,11 +14,53 @@ import {
   EscrowTransaction,
 } from "../generated/schema";
 
-export function handleAmountSent(event: AmountSentEvent): void {}
+import { Address, crypto, ethereum } from "@graphprotocol/graph-ts";
 
-export function handleAmountStopped(event: AmountStoppedEvent): void {}
+/// The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
+export function handleAmountStopped(event: AmountStoppedEvent): void {
+  // Create new escrowTx to display in UI
+  let escrowTx = EscrowTransaction.load(event.address.toHex());
+  if (escrowTx == null) return;
 
-export function handleTransactionDenied(event: TransactionDeniedEvent): void {}
+  let tupleArray: Array<ethereum.Value> = [
+    ethereum.Value.fromAddress(
+      Address.fromString(event.params.from.toHexString())
+    ),
+    ethereum.Value.fromAddress(
+      Address.fromString(event.params.to.toHexString())
+    ),
+    ethereum.Value.fromUnsignedBigInt(event.params.counter),
+  ];
+
+  let tuple = tupleArray as ethereum.Tuple;
+
+  let encoded = ethereum.encode(ethereum.Value.fromTuple(tuple))!;
+
+  // Calculate the id which is a hash of the event params
+  escrowTx.id =
+    crypto.keccak256(encoded).toHexString() + event.address.toHexString();
+
+  escrowTx.from = event.params.from.toHexString();
+  escrowTx.to = event.params.to.toHexString();
+  escrowTx.token = event.params.tokenContract.toHexString();
+  escrowTx.amount = event.params.amount;
+  escrowTx.counter = event.params.counter;
+  escrowTx.status = "STOPPED";
+
+  escrowTx.save();
+}
+
+export function handleTransactionDenied(event: TransactionDeniedEvent): void {
+  // Calculate the id which is a hash of the event params
+  let id = event.params.key.toHexString() + event.address.toHexString();
+  // Load the escrowTx with the specific key
+  let escrowTx = EscrowTransaction.load(id);
+  if (escrowTx == null) return;
+
+  escrowTx.status = "DENIED";
+
+  escrowTx.save();
+}
 
 export function handleOracleAdded(event: OracleAddedEvent): void {
   let escrow = Escrow.load(event.address.toHex());
@@ -53,16 +92,3 @@ export function handleAddressAddedToWhitelist(
 
   escrow.save();
 }
-
-export function handleWithdrawApproved(event: WithdrawApprovedEvent): void {
-  let escrow = Escrow.load(event.address.toHexString());
-  if (escrow == null) return;
-
-  // TODO
-
-  escrow.save();
-}
-
-export function handleWithdrawDisapproved(
-  event: WithdrawDisapprovedEvent
-): void {}
