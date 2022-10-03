@@ -14,7 +14,6 @@ export function handleEscrowCreated(event: EscrowCreatedEvent): void {
     let escrow = Escrow.load(event.params.escrow.toHexString());
     if (escrow == null) {
       escrow = new Escrow(event.params.escrow.toHexString());
-      // escrow.chainId = event.params.chainId;
       escrow.token = event.params.token.toHexString();
       escrow.tokenThreshold = event.params.tokenThreshold;
       escrow.timeLimit = event.params.timeLimit;
