@@ -15,7 +15,6 @@ import {
   EscrowTransaction,
 } from "../generated/schema";
 
-// const { keccak256 } = require("@ethersproject/keccak256");
 import { crypto } from "@graphprotocol/graph-ts";
 
 export function handleAmountSent(event: AmountSentEvent): void {}
