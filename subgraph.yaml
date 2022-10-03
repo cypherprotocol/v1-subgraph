@@ -19,13 +19,13 @@ dataSources:
         - name: CypherEscrow
           file: ./abis/CypherEscrow.json
       eventHandlers:
-        - event: AmountSent(indexed address,indexed address,address,uint256)
+        - event: AmountSent(indexed address,indexed address,address,uint256,uint256)
           handler: handleAmountSent
         - event: AmountStopped(indexed address,indexed address,address,uint256,uint256)
           handler: handleAmountStopped
-        - event: TransactionAccepted(indexed address,indexed address,address,uint256)
+        - event: TransactionAccepted(bytes32)
           handler: handleTransactionAccepted
-        - event: TransactionDenied(indexed address,indexed address,address,uint256)
+        - event: TransactionDenied(bytes32)
           handler: handleTransactionDenied
         - event: OracleAdded(indexed address,address)
           handler: handleOracleAdded
@@ -50,6 +50,8 @@ dataSources:
         - name: CypherRegistry
           file: ./abis/CypherRegistry.json
       eventHandlers:
-        - event: EscrowCreated(indexed address,indexed address,uint256,address,uint256,uint256,address[])
+        - event: EscrowCreated(indexed address,indexed address,address,uint256,uint256,address[])
           handler: handleEscrowCreated
+        - event: EscrowAttached(indexed address,indexed address)
+          handler: handleEscrowAttached
       file: ./src/registry.ts

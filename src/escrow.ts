@@ -15,7 +15,7 @@ import {
   EscrowTransaction,
 } from "../generated/schema";
 
-import { crypto } from "@graphprotocol/graph-ts";
+import { Address, crypto, ethereum } from "@graphprotocol/graph-ts";
 
 export function handleAmountSent(event: AmountSentEvent): void {}
 
@@ -25,16 +25,24 @@ export function handleAmountStopped(event: AmountStoppedEvent): void {
   let escrowTx = EscrowTransaction.load(event.address.toHex());
   if (escrowTx == null) return;
 
+  let tupleArray: Array<ethereum.Value> = [
+    ethereum.Value.fromAddress(
+      Address.fromString(event.params.from.toHexString())
+    ),
+    ethereum.Value.fromAddress(
+      Address.fromString(event.params.to.toHexString())
+    ),
+    ethereum.Value.fromUnsignedBigInt(event.params.counter),
+  ];
+
+  let tuple = tupleArray as ethereum.Tuple;
+
+  let encoded = ethereum.encode(ethereum.Value.fromTuple(tuple))!;
+
   // Calculate the id which is a hash of the event params
-  escrowTx.id = JSON.stringify(
-    crypto.keccak256(
-      event.params.from,
-      event.params.to,
-      event.params.tokenContract,
-      event.params.amount,
-      event.params.counter
-    )
-  );
+  escrowTx.id =
+    crypto.keccak256(encoded).toHexString() + event.address.toHexString();
+
   escrowTx.from = event.params.from.toHexString();
   escrowTx.to = event.params.to.toHexString();
   escrowTx.token = event.params.tokenContract.toHexString();
