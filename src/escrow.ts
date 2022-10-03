@@ -18,9 +18,6 @@ import { Address, crypto, ethereum } from "@graphprotocol/graph-ts";
 
 /// The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
 export function handleAmountStopped(event: AmountStoppedEvent): void {
-  // get the prococol
-  let protocol = Protocol.load(event.params.protocol.toHexString());
-
   // Create new escrowTx to display in UI
   let escrowTx = EscrowTransaction.load(event.address.toHex());
   if (escrowTx == null) return;
