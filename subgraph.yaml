@@ -19,8 +19,6 @@ dataSources:
         - name: CypherEscrow
           file: ./abis/CypherEscrow.json
       eventHandlers:
-        - event: AmountSent(indexed address,indexed address,address,uint256,uint256)
-          handler: handleAmountSent
         - event: AmountStopped(bytes32,indexed address,indexed address,address,uint256,uint256)
           handler: handleAmountStopped
         - event: TransactionAccepted(bytes32)

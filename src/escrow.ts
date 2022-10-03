@@ -1,5 +1,4 @@
 import {
-  AmountSent as AmountSentEvent,
   AmountStopped as AmountStoppedEvent,
   TransactionDenied as TransactionDeniedEvent,
   OracleAdded as OracleAddedEvent,
@@ -16,19 +15,6 @@ import {
 } from "../generated/schema";
 
 import { Address, crypto, ethereum } from "@graphprotocol/graph-ts";
-
-export function handleAmountSent(event: AmountSentEvent): void {
-  let escrow = EscrowTransaction.load(event.address.toHexString());
-
-  // let id = event.params.key.toHexString() + event.address.toHexString();
-
-  // let escrowTx = EscrowTransaction.load(id);
-  // if (escrowTx == null) return;
-
-  // escrowTx.status = "APPROVED";
-
-  // escrowTx.save();
-}
 
 /// The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
 export function handleAmountStopped(event: AmountStoppedEvent): void {
