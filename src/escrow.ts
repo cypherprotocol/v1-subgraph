@@ -15,7 +15,8 @@ import {
   EscrowTransaction,
 } from "../generated/schema";
 
-const { keccak256 } = require("@ethersproject/keccak256");
+// const { keccak256 } = require("@ethersproject/keccak256");
+import { crypto } from "@graphprotocol/graph-ts";
 
 export function handleAmountSent(event: AmountSentEvent): void {}
 
@@ -26,12 +27,14 @@ export function handleAmountStopped(event: AmountStoppedEvent): void {
   if (escrowTx == null) return;
 
   // Calculate the id which is a hash of the event params
-  escrowTx.id = keccak256(
-    event.params.from,
-    event.params.to,
-    event.params.tokenContract,
-    event.params.amount,
-    event.params.counter
+  escrowTx.id = JSON.stringify(
+    crypto.keccak256(
+      event.params.from,
+      event.params.to,
+      event.params.tokenContract,
+      event.params.amount,
+      event.params.counter
+    )
   );
   escrowTx.from = event.params.from.toHexString();
   escrowTx.to = event.params.to.toHexString();
