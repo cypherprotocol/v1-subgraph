@@ -19,7 +19,7 @@ dataSources:
         - name: CypherEscrow
           file: ./abis/CypherEscrow.json
       eventHandlers:
-        - event: AmountStopped(bytes32,indexed address,indexed address,address,uint256,uint256)
+        - event: AmountStopped(bytes32,indexed address,indexed address,indexed address,address,uint256,uint256)
           handler: handleAmountStopped
         - event: TransactionAccepted(bytes32)
           handler: handleTransactionAccepted
