@@ -24,6 +24,7 @@ type Escrow @entity {
 type EscrowTransaction @entity {
   id: ID!
   escrow: Escrow!
+  key: String!
   from: Account!
   to: Account!
   token: String!
