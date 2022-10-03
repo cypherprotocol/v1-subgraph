@@ -17,7 +17,18 @@ import {
 
 import { Address, crypto, ethereum } from "@graphprotocol/graph-ts";
 
-export function handleAmountSent(event: AmountSentEvent): void {}
+export function handleAmountSent(event: AmountSentEvent): void {
+  let escrow = EscrowTransaction.load(event.address.toHexString());
+
+  // let id = event.params.key.toHexString() + event.address.toHexString();
+
+  // let escrowTx = EscrowTransaction.load(id);
+  // if (escrowTx == null) return;
+
+  // escrowTx.status = "APPROVED";
+
+  // escrowTx.save();
+}
 
 /// The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
 export function handleAmountStopped(event: AmountStoppedEvent): void {
@@ -53,7 +64,17 @@ export function handleAmountStopped(event: AmountStoppedEvent): void {
   escrowTx.save();
 }
 
-export function handleTransactionDenied(event: TransactionDeniedEvent): void {}
+export function handleTransactionDenied(event: TransactionDeniedEvent): void {
+  // Calculate the id which is a hash of the event params
+  let id = event.params.key.toHexString() + event.address.toHexString();
+  // Load the escrowTx with the specific key
+  let escrowTx = EscrowTransaction.load(id);
+  if (escrowTx == null) return;
+
+  escrowTx.status = "DENIED";
+
+  escrowTx.save();
+}
 
 export function handleOracleAdded(event: OracleAddedEvent): void {
   let escrow = Escrow.load(event.address.toHex());
