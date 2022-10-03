@@ -5,9 +5,9 @@
 
 ## Commits
 
-♻️ refactor
-📝docs
-✨feat
-👷‍♂️edit
-🎨cleanup
+♻️ refactor  
+📝docs  
+✨feat  
+👷‍♂️edit  
+🎨cleanup  
 ⚡️gas optimize
