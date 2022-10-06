@@ -1,6 +1,7 @@
 import {
   AmountStopped as AmountStoppedEvent,
   TransactionDenied as TransactionDeniedEvent,
+  TransactionAccepted as TransactionAcceptedEvent,
   OracleAdded as OracleAddedEvent,
   TimeLimitSet as TimeLimitSetEvent,
   AddressAddedToWhitelist as AddressAddedToWhitelistEvent,
@@ -15,6 +16,17 @@ import {
 } from "../generated/schema";
 
 import { Address, crypto, ethereum } from "@graphprotocol/graph-ts";
+
+function findOrCreate(address: string): Account {
+  let account = Account.load(address);
+  if (account === null) {
+    account = new Account(address);
+    account.save();
+    return account;
+  } else {
+    return account;
+  }
+}
 
 /// The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
 export function handleAmountStopped(event: AmountStoppedEvent): void {
@@ -42,20 +54,34 @@ export function handleAmountStopped(event: AmountStoppedEvent): void {
   // Calculate the id which is a hash of the event params
   escrowTx.id = crypto.keccak256(encoded).toHexString();
 
-  escrowTx.origin = event.params.origin.toHexString(); // account type
+  escrowTx.origin = findOrCreate(event.params.origin.toHexString()).id; // account type
   escrowTx.protocol = event.params.protocol.toHexString(); // protocol type
-  escrowTx.dst = event.params.dst.toHexString(); // account type
+  escrowTx.dst = findOrCreate(event.params.origin.toHexString()).id; // account type
   escrowTx.token = event.params.tokenContract.toHexString();
   escrowTx.amount = event.params.amount;
   escrowTx.counter = event.params.counter;
-  escrowTx.status = "STOPPED";
+  escrowTx.status = "PENDING";
+
+  escrowTx.save();
+}
+
+export function handleTransactionAccepted(
+  event: TransactionAcceptedEvent
+): void {
+  // Calculate the id which is a hash of the event params
+  let id = event.params.key.toHexString();
+  // Load the escrowTx with the specific key
+  let escrowTx = EscrowTransaction.load(id);
+  if (escrowTx == null) return;
+
+  escrowTx.status = "ACCEPTED";
 
   escrowTx.save();
 }
 
 export function handleTransactionDenied(event: TransactionDeniedEvent): void {
   // Calculate the id which is a hash of the event params
-  let id = event.params.key.toHexString() + event.address.toHexString();
+  let id = event.params.key.toHexString();
   // Load the escrowTx with the specific key
   let escrowTx = EscrowTransaction.load(id);
   if (escrowTx == null) return;

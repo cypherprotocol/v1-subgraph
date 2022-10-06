@@ -1,4 +1,4 @@
-specVersion: 0.0.2
+specVersion: 0.0.4
 schema:
   file: ./schema.graphql
 dataSources:
@@ -6,12 +6,12 @@ dataSources:
     name: CypherEscrow
     network: goerli
     source:
-      address: "0x0dd5da62cff131787fab7b4755f422b329df39c1"
+      address: "0xa5ca58d6b97c711f1fff656aaf7429a26a738186"
       abi: CypherEscrow
       startBlock: 7688590
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Escrow
@@ -40,13 +40,15 @@ dataSources:
       startBlock: 7688590
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Escrow
       abis:
         - name: CypherRegistry
           file: ./abis/CypherRegistry.json
+        - name: CypherProtocol
+          file: ./abis/CypherProtocol.json
       eventHandlers:
         - event: EscrowCreated(indexed address,indexed address,address,uint256,uint256,address[])
           handler: handleEscrowCreated

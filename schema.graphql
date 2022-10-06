@@ -35,6 +35,6 @@ type EscrowTransaction @entity {
 
 enum Status {
   PENDING
-  APPROVED
-  CANCELLED
+  ACCEPTED
+  DENIED
 }

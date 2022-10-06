@@ -3,12 +3,16 @@ import {
   CypherRegistry as RegistryContract,
 } from "../generated/CypherRegistry/CypherRegistry";
 
+import { CypherProtocol as ProtocolContract } from "../generated/CypherRegistry/CypherProtocol";
+
 import { Account, Escrow, Protocol } from "../generated/schema";
 
 export function handleEscrowCreated(event: EscrowCreatedEvent): void {
   let protocol = Protocol.load(event.params.protocol.toHexString());
 
   if (protocol == null) {
+    let escrowContract = EscrowContract.bind(event.params.escrow);
+
     protocol = new Protocol(event.params.protocol.toHexString());
 
     let escrow = Escrow.load(event.params.escrow.toHexString());
