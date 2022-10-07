@@ -17,7 +17,7 @@ type Escrow @entity {
   timeLimit: BigInt!
   whitelist: [Account!]!
   oracles: [Account!]!
-  protocol: Protocol! @derivedFrom(field: "escrow")
+  protocols: [Protocol!]! @derivedFrom(field: "escrow")
   transactions: [EscrowTransaction!]! @derivedFrom(field: "escrow")
 }
 
