@@ -32,20 +32,19 @@ function findOrCreate(address: string): Account {
 
 /// The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
 export function handleAmountStopped(event: AmountStoppedEvent): void {
-  // Create new escrowTx to display in UI
   let escrowTx = EscrowTransaction.load(event.params.key.toHexString());
-  if (escrowTx == null) return;
-
-  // Calculate the id which is a hash of the event params
-  escrowTx.id = event.params.key.toHexString();
-  escrowTx.escrow = event.address.toHexString();
-  escrowTx.origin = findOrCreate(event.params.origin.toHexString()).id; // account type
-  escrowTx.protocol = event.params.protocol.toHexString(); // protocol type
-  escrowTx.dst = findOrCreate(event.params.origin.toHexString()).id; // account type
-  escrowTx.token = event.params.tokenContract.toHexString();
-  escrowTx.amount = event.params.amount;
-  escrowTx.counter = event.params.counter;
-  escrowTx.status = "PENDING";
+  if (escrowTx == null) {
+    escrowTx = new EscrowTransaction(event.params.key.toHexString());
+    escrowTx.txid = event.transaction.hash.toHexString();
+    escrowTx.escrow = event.address.toHexString();
+    escrowTx.origin = findOrCreate(event.params.origin.toHexString()).id; // account type
+    escrowTx.protocol = event.params.protocol.toHexString(); // protocol type
+    escrowTx.dst = findOrCreate(event.params.origin.toHexString()).id; // account type
+    escrowTx.token = event.params.tokenContract.toHexString();
+    escrowTx.amount = event.params.amount;
+    escrowTx.counter = event.params.counter;
+    escrowTx.status = "PENDING";
+  }
 
   escrowTx.save();
 }
