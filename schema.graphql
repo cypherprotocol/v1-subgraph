@@ -23,6 +23,7 @@ type Escrow @entity {
 
 type EscrowTransaction @entity {
   id: ID!
+  txid: String!
   escrow: Escrow!
   origin: Account!
   protocol: Protocol!
