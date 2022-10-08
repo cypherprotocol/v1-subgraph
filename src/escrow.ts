@@ -8,6 +8,8 @@ import {
   CypherEscrow as EscrowContract,
 } from "../generated/CypherEscrow/CypherEscrow";
 
+import { CypherRegistry as RegistryContract } from "../generated/CypherRegistry/CypherRegistry";
+
 import {
   Account,
   Escrow,
@@ -31,7 +33,7 @@ function findOrCreate(address: string): Account {
 /// The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
 export function handleAmountStopped(event: AmountStoppedEvent): void {
   // Create new escrowTx to display in UI
-  let escrowTx = EscrowTransaction.load(event.address.toHex());
+  let escrowTx = EscrowTransaction.load(event.address.toHexString());
   if (escrowTx == null) return;
 
   let tupleArray: Array<ethereum.Value> = [
@@ -54,6 +56,7 @@ export function handleAmountStopped(event: AmountStoppedEvent): void {
   // Calculate the id which is a hash of the event params
   escrowTx.id = crypto.keccak256(encoded).toHexString();
 
+  escrowTx.escrow = event.address.toHexString();
   escrowTx.origin = findOrCreate(event.params.origin.toHexString()).id; // account type
   escrowTx.protocol = event.params.protocol.toHexString(); // protocol type
   escrowTx.dst = findOrCreate(event.params.origin.toHexString()).id; // account type
@@ -92,12 +95,12 @@ export function handleTransactionDenied(event: TransactionDeniedEvent): void {
 }
 
 export function handleOracleAdded(event: OracleAddedEvent): void {
-  let escrow = Escrow.load(event.address.toHex());
+  let escrow = Escrow.load(event.address.toHexString());
   if (escrow == null) {
-    escrow = new Escrow(event.address.toHex());
+    escrow = new Escrow(event.address.toHexString());
   }
 
-  escrow.oracles = escrow.oracles.concat([event.params.oracle.toHex()]);
+  escrow.oracles = escrow.oracles.concat([event.params.oracle.toHexString()]);
 
   escrow.save();
 }
