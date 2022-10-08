@@ -33,29 +33,11 @@ function findOrCreate(address: string): Account {
 /// The main escrow function, this is from addLimiter() which is called in escrowETH() and escrowTokens()
 export function handleAmountStopped(event: AmountStoppedEvent): void {
   // Create new escrowTx to display in UI
-  let escrowTx = EscrowTransaction.load(event.address.toHexString());
+  let escrowTx = EscrowTransaction.load(event.params.key.toHexString());
   if (escrowTx == null) return;
 
-  let tupleArray: Array<ethereum.Value> = [
-    ethereum.Value.fromAddress(
-      Address.fromString(event.params.origin.toHexString())
-    ),
-    ethereum.Value.fromAddress(
-      Address.fromString(event.params.protocol.toHexString())
-    ),
-    ethereum.Value.fromAddress(
-      Address.fromString(event.params.dst.toHexString())
-    ),
-    ethereum.Value.fromUnsignedBigInt(event.params.counter),
-  ];
-
-  let tuple = tupleArray as ethereum.Tuple;
-
-  let encoded = ethereum.encode(ethereum.Value.fromTuple(tuple))!;
-
   // Calculate the id which is a hash of the event params
-  escrowTx.id = crypto.keccak256(encoded).toHexString();
-
+  escrowTx.id = event.params.key.toHexString();
   escrowTx.escrow = event.address.toHexString();
   escrowTx.origin = findOrCreate(event.params.origin.toHexString()).id; // account type
   escrowTx.protocol = event.params.protocol.toHexString(); // protocol type
