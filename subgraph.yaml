@@ -35,7 +35,7 @@ dataSources:
     name: CypherRegistry
     network: goerli
     source:
-      address: "0x567a58aacf7dc3ca7180917692c1a059f8bed518"
+      address: "0xaa522b759d11cd28858431afa30e6bfbe3694785"
       abi: CypherRegistry
       startBlock: 7724108
     mapping:
@@ -55,3 +55,22 @@ dataSources:
         - event: EscrowAttached(indexed address,indexed address)
           handler: handleEscrowAttached
       file: ./src/registry.ts
+  - kind: ethereum
+    name: CypherProtocol
+    network: goerli
+    source:
+      abi: CypherProtocol
+      startBlock: 7724108
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Escrow
+      abis:
+        - name: CypherProtocol
+          file: ./abis/CypherProtocol.json
+      eventHandlers:
+        - event: ProtocolCreated(indexed address,indexed address,string)
+          handler: handleProtocolCreated
+      file: ./src/protocol.ts

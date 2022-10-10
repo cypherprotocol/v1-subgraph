@@ -1,12 +1,14 @@
 type Account @entity {
   id: ID!
+  protocols: [Protocol!]! @derivedFrom(field: "architect")
   escrows: [Escrow!]! @derivedFrom(field: "oracles") ## which escrows this account is an oracle for
   whitelist: [Escrow!]! @derivedFrom(field: "whitelist") ## which escrows this account is whitelisted for
 }
 
 type Protocol @entity {
   id: ID!
-  name: String
+  name: String!
+  architect: Account!
   escrow: Escrow
 }
 
