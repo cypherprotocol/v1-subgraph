@@ -9,6 +9,7 @@ import {
 } from "../generated/CypherEscrow/CypherEscrow";
 
 import { CypherRegistry as RegistryContract } from "../generated/CypherRegistry/CypherRegistry";
+import { sendEPNSNotification } from "./EPNSNotification";
 
 import {
   Account,
@@ -39,11 +40,30 @@ export function handleAmountStopped(event: AmountStoppedEvent): void {
     escrowTx.escrow = event.address.toHexString();
     escrowTx.origin = findOrCreate(event.params.origin.toHexString()).id; // account type
     escrowTx.protocol = event.params.protocol.toHexString(); // protocol type
-    escrowTx.dst = findOrCreate(event.params.origin.toHexString()).id; // account type
+    escrowTx.dst = findOrCreate(event.params.dst.toHexString()).id; // account type
     escrowTx.token = event.params.tokenContract.toHexString();
     escrowTx.amount = event.params.amount;
     escrowTx.counter = event.params.counter;
     escrowTx.status = "PENDING";
+
+    let txid = event.transaction.hash.toHexString();
+    let escrow = event.address.toHexString();
+    let origin = event.params.origin.toHexString();
+    let protocol = event.params.protocol.toHexString();
+    let dst = event.params.dst.toHexString();
+    let token = event.params.tokenContract.toHexString();
+    let amount = event.params.amount;
+    let counter = event.params.counter;
+
+    let notification = `{\"txid\": \"${txid}\", \"escrow\": \"${escrow}\", \"origin\": \"${origin}\", \"protocol\": \"${protocol}\", \"dst\": \"${dst}\", \"token\": \"${token}\", \"amount\": \"${amount}\", \"counter\": \"${counter}\"}`;
+
+    let escrowContract = Escrow.load(escrow);
+    if (escrowContract != null) {
+      let oracles = escrowContract.oracles;
+      for (let i = 0; i < oracles.length; i++) {
+        sendEPNSNotification(oracles[i], notification);
+      }
+    }
   }
 
   escrowTx.save();

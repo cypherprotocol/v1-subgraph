@@ -7,7 +7,7 @@ dataSources:
     network: goerli
     source:
       abi: CypherEscrow
-      startBlock: 7724108
+      startBlock: 7754748
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -35,9 +35,9 @@ dataSources:
     name: CypherRegistry
     network: goerli
     source:
-      address: "0xaa522b759d11cd28858431afa30e6bfbe3694785"
+      address: "0x7e4f024c9be1889ab1d7c7e4eb8f91d57930bdf7"
       abi: CypherRegistry
-      startBlock: 7724108
+      startBlock: 7754748
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -60,7 +60,7 @@ dataSources:
     network: goerli
     source:
       abi: CypherProtocol
-      startBlock: 7724108
+      startBlock: 7754748
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
